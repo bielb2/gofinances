@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
 import total from '../../assets/total.svg';
+import arrow from '../../assets/arrow.svg';
 
 import api from '../../services/api';
 
@@ -32,21 +33,21 @@ interface Balance {
 const Dashboard: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({} as Balance);
+  const transactionsType = ['Título', 'Preço', 'Categoria',  'Data']
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
       const { transactions, balance } = await api.get('/transactions')
       .then((response) => {
-        return response.data
+        return response.data;
       });
 
       setTransactions(transactions)
-      setBalance((prevState) => ({
-        ...prevState,
+      setBalance({
         income: formatValue(Number(balance.income)),
         outcome: formatValue(Number(balance.outcome)),
         total: formatValue(Number(balance.total)),
-      }))
+      });
     }
 
     loadTransactions();
@@ -58,10 +59,11 @@ const Dashboard: React.FC = () => {
         transactions[index] = {
           ...transaction,
           formattedValue: formatValue(transaction.value),
+          formattedDate: new Date(transaction.created_at).toLocaleDateString('pt-br'),
         }
-      })
+      });
     }
-  } , [transactions])
+  } , [transactions]);
 
   return (
     <>
@@ -105,29 +107,30 @@ const Dashboard: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>Título</th>
-                <th>Preço</th>
-                <th>Categoria</th>
-                <th>Data</th>
+                {transactionsType.map(transactionType => (
+                  <th key={transactionType}>
+                    {transactionType}
+                    <img
+                      src={arrow}
+                      alt={`Organizar ${transactionType}`}
+                    />
+                  </th>
+                ))}
               </tr>
             </thead>
 
             <tbody>
-              {transactions.map(transaction => (
-                <>
-                  <tr key={transaction.id}>
-                    <td className="title">{transaction.title}</td>
-                    <td className="income">{transaction.formattedValue}0</td>
-                    <td>Sell</td>
-                    <td>20/04/2020</td>
-                  </tr>
-                  <tr>
-                    <td className="title">Website Hosting</td>
-                    <td className="outcome">- R$ 1.000,00</td>
-                    <td>Hosting</td>
-                    <td>19/04/2020</td>
-                  </tr>
-              </>
+              {
+              transactions.map(transaction => (
+                <tr key={transaction.id}>
+                  <td className="title">{transaction.title}</td>
+                  <td className={transaction.type === 'income' ? 'income' : 'outcome'}>
+                  {transaction.type === 'outcome' && '- '}
+                    {transaction.formattedValue}
+                  </td>
+                  <td>{transaction.category?.title}</td>
+                  <td>{transaction.formattedDate}</td>
+                </tr>
               ))}
             </tbody>
           </table>

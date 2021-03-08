@@ -20,7 +20,7 @@ export const Container = styled.div<ContainerProps>`
       a.active {
           opacity: 1;
           border-bottom: 2px solid #FF872C;
-          padding: 4px;
+          padding-bottom: 8px;
         }
 
       a {
