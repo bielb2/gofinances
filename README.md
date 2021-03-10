@@ -1,5 +1,5 @@
 <div align="center" id="top"> 
-  <img src="./frontend/assets/logo.svg" alt="Gofinances" />
+  <img src="./frontend/src/assets/logo.svg" alt="Gofinances" />
 
   &#xa0;
 
@@ -52,14 +52,6 @@ coming soon
 
 <div align="center">
   <img src="https://ik.imagekit.io/b0g9wlasxh/Readme_Images/gofinances/gofinances_QhFdV-bqg.gif" alt="App gif" />
-</div>
-
-<br>
-<br>
-
-<div align="center">
-  <img height="350" src="https://ik.imagekit.io/b0g9wlasxh/Readme_Images/gofinances/header_L8KHzPp6Y.png" alt="Header" />
-  <img height="350" src="https://ik.imagekit.io/b0g9wlasxh/Readme_Images/gofinances/dashboard_0iYgUQZBS.png" alt="Dashboard" />
 </div>
 
 ## :rocket: Technologies ##
