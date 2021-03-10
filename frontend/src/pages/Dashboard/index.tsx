@@ -33,37 +33,33 @@ interface Balance {
 const Dashboard: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({} as Balance);
-  const transactionsType = ['Título', 'Preço', 'Categoria',  'Data']
+  const transactionsType = ['Título', 'Preço', 'Categoria',  'Data'];
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
       const { transactions, balance } = await api.get('/transactions')
-      .then((response) => {
-        return response.data;
-      });
+      .then(response => { return response.data });
 
-      setTransactions(transactions)
-      setBalance({
-        income: formatValue(Number(balance.income)),
-        outcome: formatValue(Number(balance.outcome)),
-        total: formatValue(Number(balance.total)),
-      });
+      const transactionsFormatted = transactions.map(
+        (transaction: Transaction) => ({
+          ...transaction,
+          formattedValue: formatValue(transaction.value),
+          formattedDate: new Date(transaction.created_at).toLocaleDateString('pt-br'),
+        })
+      );
+
+      const balanceFormatted = {
+        income: formatValue(balance.income),
+        outcome: formatValue(balance.outcome),
+        total: formatValue(balance.total),
+      };
+
+      setTransactions(transactionsFormatted);
+      setBalance(balanceFormatted);
     }
 
     loadTransactions();
   }, []);
-
-  useEffect(() => {
-    if(transactions.length) {
-      transactions.forEach((transaction, index) => {
-        transactions[index] = {
-          ...transaction,
-          formattedValue: formatValue(transaction.value),
-          formattedDate: new Date(transaction.created_at).toLocaleDateString('pt-br'),
-        }
-      });
-    }
-  } , [transactions]);
 
   return (
     <>
@@ -124,7 +120,7 @@ const Dashboard: React.FC = () => {
               transactions.map(transaction => (
                 <tr key={transaction.id}>
                   <td className="title">{transaction.title}</td>
-                  <td className={transaction.type === 'income' ? 'income' : 'outcome'}>
+                  <td className={transaction.type}>
                   {transaction.type === 'outcome' && '- '}
                     {transaction.formattedValue}
                   </td>
